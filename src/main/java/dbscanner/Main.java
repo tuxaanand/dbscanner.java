@@ -29,6 +29,7 @@ public class Main {
     static {
         OPTIONAL_PARAMS.put("file", "Output file path");
         OPTIONAL_PARAMS.put("exclude-tables", "Tables to exclude - comma separated");
+        OPTIONAL_PARAMS.put("statement", "Statement template");
     }
 
     public static void main(String[] args) {
@@ -58,8 +59,12 @@ public class Main {
             if (options.containsKey("file")) {
                 out = new PrintStream(new File(options.get("file")));
             }
+            String statement = "TRUNCATE TABLE %1s.%2s";
+            if(options.containsKey("statement")) {
+                statement = options.get("statement");
+            }
             for (String tab : truncationOrder) {
-                out.printf("TRUNCATE TABLE %s.%s;\n", schemaName, tab);
+                out.printf(statement + ";\n", schemaName, tab);
             }
         } catch (SQLException e) {
             e.printStackTrace();
